@@ -1,46 +1,65 @@
 const fs = require('fs');
 
-const lineSeparator = '\r\n';
-const dataSeparator = '\t';
-
-const wordLength = 5;
-const newLineSeparator = '\n';
-const newDataSeparator = ';'
-const columns = [0, 1, 2, 14, 24];
-
 let input = fs.readFileSync(__dirname + '/lexporbr_alfa_txt.txt', { encoding: 'latin1' });
 let output = fs.openSync(__dirname + '/database.csv', 'w');
-let header = [];
 
-let result = input
-  // separa as linhas
-  .split(lineSeparator)
-  // separa as infos de cada linha
-  .map(line => {
-    return line.split(dataSeparator);
-  });
-//separa a linha de cabeçalho
-header = result.shift();
-// mantém apenas as palavras de [wordLength] letras
-result = result
-  .filter((line, i) => {
-    return i === 0 ? true : line[0].length === wordLength && !line[14].includes("S");
+//TODO: filtro para remover palavras estrangeiras
+
+//funcão para encadeamento de uma sequência de funções a serem aplicadas aos dados
+const pipe = (...funcs) => x => funcs.reduce((acc, f) => f(acc), x);
+
+const splitLines = x => {
+  x.data = x.data.split(x.lineSeparator);
+  return x
+}
+const splitCols = x => {
+  x.data = x.data.map(row => row.split(x.dataSeparator));
+  return x
+}
+const splitHeader = x => {
+  if (x.hasHeader) x.header = x.data.shift();
+  return x;
+}
+const filterByLength = x => {
+  x.data = x.data.filter((row, i) => {
+    return row[0].length === x.wordLength;
   })
-  //remove conjugações de verbos, deixa apenas infinitivos
-  .filter((line, i) => {
-    if (line[1].includes('ver')) {
-      let verbo = line[0];
-      return (verbo[verbo.length - 1] === 'r')
+  return x
+}
+const filterBySymbol = x => {
+  x.data = x.data.filter((row, i) => {
+    return row[0].match(/([A-z]|[ãáâeéêíóôúç]){5}/);
+  })
+  return x
+}
+const removeFlexedVerbs = x => {
+  x.data = x.data.filter((row, i) => {
+    if (row[1].includes('ver')) {
+      let verb = row[0];
+      return (verb[verb.length - 1] === 'r')
     }
     return true;
   })
-  // junta as infos das colunas desejadas de uma linha com o novo separador
-  .map(line => {
-    return line.filter((data, i) => {
-      return (columns.includes(i));
+  return x
+}
+const rejoinData = x => {
+  x.data = x.data.map(row => {
+    return row.filter((data, i) => {
+      return (x.desiredColumns.includes(i));
     })
-      .join(newDataSeparator);
+      .join(x.newDataSeparator);
   })
+  return x
+}
 
-//fs.writeFileSync(output, header + newLineSeparator)
-fs.writeFileSync(output, result.join(newLineSeparator))
+let result = pipe(splitLines, splitCols, splitHeader, filterByLength, filterBySymbol, removeFlexedVerbs, rejoinData)({
+  data: input,
+  lineSeparator: '\r\n',
+  dataSeparator: '\t',
+  newDataSeparator: ';',
+  hasHeader: true,
+  wordLength: 5,
+  desiredColumns: [0, 1, 2, 14, 24]
+})
+
+fs.writeFileSync(output, result.data.join('\n'))
