@@ -8,7 +8,9 @@ const createGame = (rows) => {
   let gameArea = document.createElement('div');
   gameArea.classList.add('gameArea');
   for (let i = 0; i < rows; i++) {
-    gameArea.appendChild(createLine(''));
+    let line = createLine('');
+    if (i == 0) line.classList.add('current');
+    gameArea.appendChild(line);
   }
   return gameArea;
 }
@@ -26,8 +28,12 @@ const createLine = (word) => {
   return line;
 }
 
+const getCurrentLine = () => {
+  return document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`);
+}
+
 const getGuess = () => {
-  let line = document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`);
+  let line = getCurrentLine();
   let word = Array.from(line.childNodes).reduce((acc, node) => {
     return acc + node.textContent;
   }, "")
@@ -52,7 +58,7 @@ const makeKb = () => {
   for (k of keys) {
     let el = document.createElement('button');
     el.id = `kb_${k}`;
-    if (k !== 'backspace') {
+    if (k !== 'backspace' && k !== 'enter') {
       el.innerHTML = k.toUpperCase();
     }
     kb.appendChild(el);
@@ -88,12 +94,16 @@ const keyboardHandler = (key) => {
     if (currentColumn === 4) {
       let word = getGuess();
       //checa se pode enviar a tentativa para verificação
-      if (checkWord(word)) {
+      if (!checkWord(word)) {
+        console.log('a palavra não é válida');
+      }
+      else {
         sendGuess(word);
+        getCurrentLine().classList.remove('current');
         if (Game.tries >= Game.maxTries) return
         Game.tries++;
+        document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`)?.classList.add('current');
       }
-      else console.log('a palavra não é válida');
     }
   }
 }

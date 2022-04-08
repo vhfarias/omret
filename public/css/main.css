@@ -5,41 +5,50 @@
   padding: 0;
   font-family: "Poppins", Arial, sans-serif;
   color: #ffffff;
-  font-size: 14pt;
+  font-size: max(12pt, calc(0.02 * 100vw));
   box-sizing: border-box;
 }
 
 body {
   background-color: dimgray;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
   text-align: center;
+  margin: auto;
 }
 
 h1 {
-  font-size: 2.4rem;
-  margin: 1.4rem auto;
+  font-size: 2.2rem;
+  margin: 1.2rem auto;
 }
 
-h2 {
-  font-size: 1.2rem;
-  margin: 1.1rem auto;
-}
-
-.main {
+/* .main {
   display: grid;
   gap: 10%;
+  margin: auto;
+  width: 100%;
+} */
+
+.gameArea {
+  display: grid;
+  /* grid-template-rows: repeat(auto-fill, 1em); */
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: auto;
+  width: fit-content;
 }
 
 .keyboard {
   display: grid;
-  width: 70%;
   grid-template-columns: repeat(32, 1fr);
   grid-template-rows: repeat(3, 1fr);
-
-  margin: auto;
-  grid-gap: 10px;
+  padding: 0.1em;
+  margin: 2em auto;
+  gap: 0.35rem;
+  width: min(max(360px, 70%), 50em);
 }
 
 .keyboard button {
@@ -50,12 +59,11 @@ h2 {
   background-color: #00000027;
   border: none;
   cursor: pointer;
-  min-width: 70px;
-  min-height: 70px;
   font-weight: bold;
-  font-size: 1.8rem;
-  border-radius: 0.3em;
+  font-size: 1em;
+  border-radius: 9%;
   user-select: none;
+  height: 3em;
 }
 
 #kb_a {
@@ -68,10 +76,16 @@ h2 {
 
 #kb_backspace {
   grid-column: 30 / span 3;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\' x=\'0px\' y=\'0px\' viewBox=\'-35 -30 180 180\' xml:space=\'preserve\'><style type=\'text/css\'>.st0{fill:none;stroke:%23FFFFFF;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}</style><path class=\'st0\' d=\'M2.5,60L40,25h72.5c1.4,0,2.6,0.6,3.5,1.5c0.9,0.9,1.5,2.2,1.5,3.5v30v30c0,1.4-0.6,2.6-1.5,3.5 s-2.2,1.5-3.5,1.5H40L2.5,60z\'/><g><line class=\'st0\' x1=\'52\' y1=\'78\' x2=\'87\' y2=\'43\'/><line class=\'st0\' x1=\'87\' y1=\'78\' x2=\'52\' y2=\'43\'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\' x=\'0px\' y=\'0px\' viewBox=\'-50 0 220 120\' xml:space=\'preserve\'><style type=\'text/css\'>.st0{fill:none;stroke:%23FFFFFF;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}</style><path class=\'st0\' d=\'M2.5,60L40,25h72.5c1.4,0,2.6,0.6,3.5,1.5c0.9,0.9,1.5,2.2,1.5,3.5v30v30c0,1.4-0.6,2.6-1.5,3.5 s-2.2,1.5-3.5,1.5H40L2.5,60z\'/><g><line class=\'st0\' x1=\'52\' y1=\'78\' x2=\'87\' y2=\'43\'/><line class=\'st0\' x1=\'87\' y1=\'78\' x2=\'52\' y2=\'43\'/></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  /* background-size: 35px 35px; */
 
 }
 
 #kb_enter {
   grid-column: 25 / span 6;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\' x=\'0px\' y=\'0px\' viewBox=\'-30 -30 180 180\' xml:space=\'preserve\'><style type=\'text/css\'>.cls-1{fill:none;stroke:%23FFFFFF;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}</style><path class=\'cls-1\' d=\'M106.67,4H69.33A9.36,9.36,0,0,0,60,13.33V60H13.33A9.36,9.36,0,0,0,4,69.33v37.34A9.36,9.36,0,0,0,13.33,116h93.34a9.36,9.36,0,0,0,9.33-9.33V13.33A9.36,9.36,0,0,0,106.67,4Z\'/><path class=\'cls-1\' d=\'M88,32V78.64A9.38,9.38,0,0,1,78.64,88H32\'/><path class=\'cls-1\' d=\'M32,88.07l13.2-13.2Zm0,0,13.07,13.06\'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
 }
