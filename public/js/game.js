@@ -47,6 +47,14 @@ const checkWord = (word) => {
 
 const sendGuess = (word) => {
   //TODO: enviar para o servidor e receber uma resposta com o que está certo/errado
+  return fetch('./check', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ word })
+  })
 }
 
 const makeKb = () => {
@@ -63,8 +71,7 @@ const makeKb = () => {
     }
     kb.appendChild(el);
   }
-  document.body.appendChild(kb);
-
+  document.body.insertBefore(kb, document.querySelector('body>script:first-of-type'));
 }
 
 const keyboardHandler = (key) => {
@@ -98,11 +105,21 @@ const keyboardHandler = (key) => {
         console.log('a palavra não é válida');
       }
       else {
-        sendGuess(word);
-        getCurrentLine().classList.remove('current');
-        if (Game.tries >= Game.maxTries) return
-        Game.tries++;
-        document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`)?.classList.add('current');
+        sendGuess(word.toLowerCase())
+          .then(res => res.body.getReader().read())
+          .then(({ value, done }) => {
+            return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value)))
+          })
+          .then(answer => {
+            console.log(Object.values(answer));
+            Array.from(getCurrentLine().childNodes).forEach((node, i) => node.classList.add(answer[i.toString()]))
+            let nextLine = getCurrentLine().nextSibling;
+            getCurrentLine().classList.remove('current');
+            if (Game.tries >= Game.maxTries) return
+            Game.tries++;
+            nextLine.classList.add('current');
+          })
+        //document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`)?.classList.add('current');
       }
     }
   }
