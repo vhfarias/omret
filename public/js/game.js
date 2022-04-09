@@ -46,14 +46,23 @@ const checkWord = (word) => {
 }
 
 const sendGuess = (word) => {
-  //TODO: enviar para o servidor e receber uma resposta com o que está certo/errado
+  let data = word.split('').reduce((acc, letter, i) => {
+    if (acc.hasOwnProperty(letter)) {
+      acc[letter].push(i);
+
+    } else {
+      acc[letter] = [i];
+    }
+    return acc;
+  }, {})
+
   return fetch('./check', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ word })
+    body: JSON.stringify(data)
   })
 }
 
@@ -111,15 +120,13 @@ const keyboardHandler = (key) => {
             return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value)))
           })
           .then(answer => {
-            console.log(Object.values(answer));
             Array.from(getCurrentLine().childNodes).forEach((node, i) => node.classList.add(answer[i.toString()]))
             let nextLine = getCurrentLine().nextSibling;
             getCurrentLine().classList.remove('current');
             if (Game.tries >= Game.maxTries) return
             Game.tries++;
-            nextLine.classList.add('current');
+            nextLine?.classList.add('current');
           })
-        //document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`)?.classList.add('current');
       }
     }
   }

@@ -20,8 +20,7 @@ app.get('/js/:name', (req, res) => {
 })
 
 app.post('/check', (req, res) => {
-  console.log(req.body);
-  res.json(checkWord(req.body.word));
+  res.json(checkWord(req.body));
 })
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
