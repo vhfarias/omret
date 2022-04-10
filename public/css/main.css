@@ -4,8 +4,8 @@
   margin: 0;
   padding: 0;
   font-family: "Poppins", Arial, sans-serif;
-  color: #ffffff;
-  font-size: max(12pt, calc(0.02 * 100vw));
+  color: #f2f2f2;
+  font-size: min(22pt, max(14pt, calc(0.02 * 100vw)));
   box-sizing: border-box;
 }
 
@@ -21,22 +21,14 @@ header {
 }
 
 h1 {
-  font-size: 2.2rem;
-  margin: 1.2rem auto;
+  font-size: 2em;
+  margin: 0.4em auto;
 }
-
-/* .main {
-  display: grid;
-  gap: 10%;
-  margin: auto;
-  width: 100%;
-} */
 
 .gameArea {
   display: grid;
-  /* grid-template-rows: repeat(auto-fill, 1em); */
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 6px;
   margin: auto;
   width: fit-content;
 }
@@ -46,9 +38,11 @@ h1 {
   grid-template-columns: repeat(32, 1fr);
   grid-template-rows: repeat(3, 1fr);
   padding: 0.1em;
-  margin: 2em auto;
-  gap: 0.35rem;
-  width: min(max(360px, 70%), 50em);
+  margin: 1.2em auto 0;
+  gap: 0.25em;
+  width: min(30em, max(360px, 70%));
+  min-width: 320px;
+  font-size: 0.8rem;
 }
 
 .keyboard button {
@@ -60,10 +54,9 @@ h1 {
   border: none;
   cursor: pointer;
   font-weight: bold;
-  font-size: 1em;
   border-radius: 9%;
   user-select: none;
-  height: 3em;
+  height: 2.4em;
 }
 
 #kb_a {
@@ -79,7 +72,6 @@ h1 {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\' x=\'0px\' y=\'0px\' viewBox=\'-50 0 220 120\' xml:space=\'preserve\'><style type=\'text/css\'>.st0{fill:none;stroke:%23FFFFFF;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}</style><path class=\'st0\' d=\'M2.5,60L40,25h72.5c1.4,0,2.6,0.6,3.5,1.5c0.9,0.9,1.5,2.2,1.5,3.5v30v30c0,1.4-0.6,2.6-1.5,3.5 s-2.2,1.5-3.5,1.5H40L2.5,60z\'/><g><line class=\'st0\' x1=\'52\' y1=\'78\' x2=\'87\' y2=\'43\'/><line class=\'st0\' x1=\'87\' y1=\'78\' x2=\'52\' y2=\'43\'/></g></svg>");
   background-repeat: no-repeat;
   background-position: center;
-  /* background-size: 35px 35px; */
 
 }
 
