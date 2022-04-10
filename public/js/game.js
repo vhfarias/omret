@@ -1,25 +1,26 @@
 let Game = {
-  tries: 0,
+  tries: 1,
   word: 'not so fast, cheater',
+  wordLength: 5,
   maxTries: 6
 }
 
-const createGame = (rows) => {
+const createGame = () => {
   let gameArea = document.createElement('div');
   gameArea.classList.add('gameArea');
-  for (let i = 0; i < rows; i++) {
-    let line = createLine('');
-    if (i == 0) line.classList.add('current');
-    gameArea.appendChild(line);
+  for (let i = 0; i < Game.maxTries; i++) {
+    let row = createRow('');
+    if (i == 0) row.classList.add('current');
+    gameArea.appendChild(row);
   }
   return gameArea;
 }
 
-const createLine = (word) => {
+const createRow = (word) => {
   word = word.toUpperCase();
   let line = document.createElement('div');
   line.classList.add('line');
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < Game.wordLength; i++) {
     let letter = document.createElement('div');
     letter.classList.add('letter')
     letter.innerHTML = word[i] || '';
@@ -28,12 +29,12 @@ const createLine = (word) => {
   return line;
 }
 
-const getCurrentLine = () => {
-  return document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`);
+const getCurrentRow = () => {
+  return document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries})`);
 }
 
 const getGuess = () => {
-  let line = getCurrentLine();
+  let line = getCurrentRow();
   let word = Array.from(line.childNodes).reduce((acc, node) => {
     return acc + node.textContent;
   }, "")
@@ -85,7 +86,7 @@ const makeKb = () => {
 
 const keyboardHandler = (key) => {
   //pega a linha atual
-  let currentLine = document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries + 1})`);
+  let currentLine = document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries})`);
   //pega a coluna atual, a última com algo escrito (-1 (vazio) a 4 (cheio))
   let currentColumn = Array.from(currentLine.childNodes).reduce((acc, node, index) => {
     return node.textContent !== '' ? index : acc;
@@ -93,7 +94,7 @@ const keyboardHandler = (key) => {
   //se for uma letra que não backspace e enter
   if (key.length === 1) {
     //não faz nada se não tiver mais espaço para digitar
-    if (currentColumn === 4) return;
+    if (currentColumn === Game.wordLength - 1) return;
     // coloca a letra clicada no espaço livre seguinte 
     currentLine.childNodes[currentColumn + 1].textContent = key.toUpperCase();
   }
@@ -107,7 +108,7 @@ const keyboardHandler = (key) => {
   //se for enter
   else if (key === 'enter') {
     //só faz algo se toda a linha estiver preenchida
-    if (currentColumn === 4) {
+    if (currentColumn === Game.wordLength - 1) {
       let word = getGuess();
       //checa se pode enviar a tentativa para verificação
       if (!checkWord(word)) {
@@ -119,13 +120,18 @@ const keyboardHandler = (key) => {
           .then(({ value, done }) => {
             return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value)))
           })
-          .then(answer => {
-            Array.from(getCurrentLine().childNodes).forEach((node, i) => node.classList.add(answer[i.toString()]))
-            let nextLine = getCurrentLine().nextSibling;
-            getCurrentLine().classList.remove('current');
-            if (Game.tries >= Game.maxTries) return
-            Game.tries++;
-            nextLine?.classList.add('current');
+          .then(answers => {
+            Array.from(getCurrentRow().childNodes).forEach((node, i) => node.classList.add(answers[i.toString()]))
+            getCurrentRow().classList.remove('current');
+            //checar fim (vitória ou máximo de tentativas)
+            if (Object.values(answers).every(answer => answer === 'right') || Game.tries >= Game.maxTries) {
+              console.log('Fim de jogo');
+            } else {
+              //segue o jogo
+              let nextLine = getCurrentRow().nextSibling;
+              nextLine?.classList.add('current');
+              Game.tries++;
+            }
           })
       }
     }
@@ -147,3 +153,6 @@ const kbTypeHandler = (e) => {
   //filtra as letras válidas e chama o handler
   if (keys.indexOf(pressed) != -1) keyboardHandler(pressed);
 }
+
+makeKb();
+document.querySelector('main').appendChild(createGame(6))
