@@ -53,7 +53,7 @@ const sendGuess = (word) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ guess: word })
+    body: JSON.stringify({ guess: word, tries: Game.tries })
   })
 }
 
@@ -76,9 +76,9 @@ const makeKb = () => {
 
 const keyboardHandler = (key) => {
   //pega a linha atual
-  let currentLine = document.querySelector(`.gameArea > .line:nth-of-type(${Game.tries})`);
+  let currentRow = getCurrentRow();
   //pega a coluna atual, a última com algo escrito (-1 (vazio) a 4 (cheio))
-  let currentColumn = Array.from(currentLine.childNodes).reduce((acc, node, index) => {
+  let currentColumn = Array.from(currentRow.childNodes).reduce((acc, node, index) => {
     return node.textContent !== '' ? index : acc;
   }, -1);
   //se for uma letra que não backspace e enter
@@ -86,13 +86,13 @@ const keyboardHandler = (key) => {
     //não faz nada se não tiver mais espaço para digitar
     if (currentColumn === Game.wordLength - 1) return;
     // coloca a letra clicada no espaço livre seguinte 
-    currentLine.childNodes[currentColumn + 1].textContent = key.toUpperCase();
+    currentRow.childNodes[currentColumn + 1].textContent = key.toUpperCase();
   }
   //se for backspace
   else if (key === 'backspace') {
     //se tiver uma letra no espaço, apaga ela
     if (currentColumn > -1) {
-      currentLine.childNodes[currentColumn].textContent = '';
+      currentRow.childNodes[currentColumn].textContent = '';
     }
   }
   //se for enter
@@ -108,14 +108,23 @@ const keyboardHandler = (key) => {
         sendGuess(word.toLowerCase())
           .then(res => res.body.getReader().read())
           .then(({ value, done }) => {
-            return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value))['answer'])
+            return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value)))
           })
-          .then(answers => {
+          .then(res => {
+            let answers = res['answer'];
             Array.from(getCurrentRow().childNodes).forEach((node, i) => node.classList.add(answers[i]))
             getCurrentRow().classList.remove('current');
             //checar fim (vitória ou máximo de tentativas)
-            if (Object.values(answers).every(answer => answer === 'right') || Game.tries >= Game.maxTries) {
+            if (Object.values(answers).every(answer => answer === 'right') || Game.tries === Game.maxTries) {
               console.log('Fim de jogo');
+              // game over, mostra a palavra
+              if (Game.tries === Game.maxTries) {
+                //mostra a palavra nos avisos
+                console.log('last try: ' + Game.tries)
+                let keywordDiv = document.querySelector('.warn');
+                keywordDiv.innerText = `A palavra é ${res.solution.toUpperCase()}`
+                keywordDiv.classList.remove('hidden');
+              }
             } else {
               //segue o jogo
               let nextLine = getCurrentRow().nextSibling;

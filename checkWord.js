@@ -3,7 +3,7 @@ let fs = require('fs');
 const pdd = fs.readFileSync('./database/pdd.txt', { encoding: 'utf8' });
 console.log(`Palavra do dia: ${pdd}`)
 
-const checkWord = (guess) => {
+const checkWord = (guess, showSolution) => {
 
   // cria um array distinguindo as letras no lugar certo das outras
   let par = Array.from(pdd).map((letter, i) => guess[i] === letter ? '=' : pdd[i]);
@@ -32,8 +32,12 @@ const checkWord = (guess) => {
   // cria um array que distingue letras certas, em posição errada e inexistentes
   let par3 = par2.map(v => ['=', '~'].includes(v) ? v : '-')
 
-  return par3.map(s => (s === '=' ? 'right' : s === '~' ? 'misplaced' : 'wrong'))
+  let par4 = par3.map(s => (s === '=' ? 'right' : s === '~' ? 'misplaced' : 'wrong'))
 
+  let response = {};
+  response.answer = par4;
+  showSolution ? response.solution = pdd : '';
+  return response
 }
 
 module.exports = {

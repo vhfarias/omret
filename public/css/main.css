@@ -22,7 +22,7 @@ header {
 
 h1 {
   font-size: 2em;
-  margin: 0.4em auto;
+  margin: 0.3em auto;
 }
 
 .gameArea {
@@ -30,6 +30,28 @@ h1 {
   gap: 6px;
   margin: auto;
   width: fit-content;
+}
+
+.warn {
+  background-color: #3b362e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1.0;
+  font-size: 0.8em;
+  padding: 0.5em;
+  transition: opacity 1s;
+  text-align: center;
+  width: fit-content;
+  border-radius: 10px;
+  margin: 0.4em auto;
+  min-height: 0.8em;
+  height: 2em;
+
+}
+
+.hidden {
+  opacity: 0;
 }
 
 .line {
