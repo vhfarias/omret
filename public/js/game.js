@@ -47,23 +47,13 @@ const checkWord = (word) => {
 }
 
 const sendGuess = (word) => {
-  let data = word.split('').reduce((acc, letter, i) => {
-    if (acc.hasOwnProperty(letter)) {
-      acc[letter].push(i);
-
-    } else {
-      acc[letter] = [i];
-    }
-    return acc;
-  }, {})
-
   return fetch('./check', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ guess: word })
   })
 }
 
@@ -118,10 +108,10 @@ const keyboardHandler = (key) => {
         sendGuess(word.toLowerCase())
           .then(res => res.body.getReader().read())
           .then(({ value, done }) => {
-            return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value)))
+            return Promise.resolve(JSON.parse(new TextDecoder("utf-8").decode(value))['answer'])
           })
           .then(answers => {
-            Array.from(getCurrentRow().childNodes).forEach((node, i) => node.classList.add(answers[i.toString()]))
+            Array.from(getCurrentRow().childNodes).forEach((node, i) => node.classList.add(answers[i]))
             getCurrentRow().classList.remove('current');
             //checar fim (vitória ou máximo de tentativas)
             if (Object.values(answers).every(answer => answer === 'right') || Game.tries >= Game.maxTries) {

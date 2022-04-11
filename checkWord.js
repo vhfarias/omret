@@ -1,30 +1,39 @@
 let fs = require('fs');
 
-const todayWord = fs.readFileSync('./database/pdd.txt', { encoding: 'utf8' });
-console.log(`Palavra do dia: ${todayWord}`)
+const pdd = fs.readFileSync('./database/pdd.txt', { encoding: 'utf8' });
+console.log(`Palavra do dia: ${pdd}`)
 
 const checkWord = (guess) => {
-  let pdd = todayWord.split('').reduce((acc, letter, i) => {
-    if (acc.hasOwnProperty(letter)) {
-      acc[letter].push(i);
-    } else {
-      acc[letter] = [i];
-    }
-    return acc;
-  }, {})
 
-  let check = Object.entries(guess).reduce((acc, entry) => {
-    let [letter, occurrences] = entry;
-    // se tiver a letra do palpite na pdd, ou tá certo ou tá fora de lugar
-    if (pdd.hasOwnProperty(letter)) {
-      for (let i = 0; i < Math.min(pdd[letter].length, occurrences.length); i++) {
-        let oc = occurrences[i];
-        pdd[letter].includes(oc) ? acc[oc] = 'right' : acc[oc] = 'misplaced';
+  // cria um array distinguindo as letras no lugar certo das outras
+  let par = Array.from(pdd).map((letter, i) => guess[i] === letter ? '=' : pdd[i]);
+
+  //cria uma cópia do array acima
+  let par2 = Array.from(par);
+
+  //transformea o array acima para distinguir letras no lugar errado e no lugar certo das outras
+  for (let i in par) {
+    //se a letra já foi dada como igual, ignorar
+    if (par[i] === '=') continue
+    else {
+      //percorrer cada letra da tentativa para encontrar correspondência com a palavra-chave
+      for (let j in guess) {
+        // ignorar letras que já foram comparadas
+        if (['=', '~', '-'].includes(par2[j])) continue
+        // se as letras são iguais, está na palavra, mas na posição errada
+        if (guess[j] === pdd[i]) {
+          par2[j] = '~';
+          break;
+        }
       }
     }
-    return acc;
-  }, new Array(5).fill('wrong'));
-  return Object.fromEntries(check.entries());
+  }
+
+  // cria um array que distingue letras certas, em posição errada e inexistentes
+  let par3 = par2.map(v => ['=', '~'].includes(v) ? v : '-')
+
+  return par3.map(s => (s === '=' ? 'right' : s === '~' ? 'misplaced' : 'wrong'))
+
 }
 
 module.exports = {
