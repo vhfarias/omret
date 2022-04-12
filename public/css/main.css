@@ -75,18 +75,22 @@ h1 {
   border-radius: 0.25em;
   font-family: Arial, sans-serif;
   user-select: none;
+  transition: background-color 0.2s;
 }
 
-.right {
-  background-color: #4d9452;
+.wrong,
+.keyboard button.wrong {
+  background-color: #3b362e;
 }
 
-.misplaced {
+.misplaced,
+.keyboard button.misplaced {
   background-color: #c9b728;
 }
 
-.wrong {
-  background-color: #3b362e;
+.right,
+.keyboard button.right {
+  background-color: #4d9452;
 }
 
 .current .letter {
@@ -118,6 +122,7 @@ h1 {
   border-radius: 9%;
   user-select: none;
   height: 2.4em;
+  transition: background-color 0.2s;
 }
 
 #kb_a {

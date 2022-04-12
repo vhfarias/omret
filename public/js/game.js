@@ -112,8 +112,13 @@ const keyboardHandler = (key) => {
           })
           .then(res => {
             let answers = res['answer'];
-            Array.from(getCurrentRow().childNodes).forEach((node, i) => node.classList.add(answers[i]))
-            getCurrentRow().classList.remove('current');
+            //pega a fileira atual
+            let currentRow = getCurrentRow();
+            //atualiza a fileira com as cores dorrespondentes a tentativa
+            Array.from(currentRow.childNodes).forEach((node, i) => node.classList.add(answers[i]))
+            //atualiza o teclado
+            updateKb(currentRow);
+            currentRow.classList.remove('current');
             //checar fim (vitória ou máximo de tentativas)
             if (Object.values(answers).every(answer => answer === 'right') || Game.tries === Game.maxTries) {
               console.log('Fim de jogo');
@@ -127,7 +132,7 @@ const keyboardHandler = (key) => {
               }
             } else {
               //segue o jogo
-              let nextLine = getCurrentRow().nextSibling;
+              let nextLine = currentRow.nextSibling;
               nextLine?.classList.add('current');
               Game.tries++;
             }
@@ -135,6 +140,31 @@ const keyboardHandler = (key) => {
       }
     }
   }
+}
+
+const updateKb = (row) => {
+  row.childNodes.forEach(element => {
+    let letter = element.textContent.toLowerCase();
+    let kbKey = document.querySelector(`#kb_${letter}`);
+    if (element.classList.contains('right')) {
+      if (!kbKey.classList.contains('right')) {
+        kbKey.classList.remove('wrong');
+        kbKey.classList.remove('misplaced');
+        kbKey.classList.add('right');
+      }
+    }
+    else if (element.classList.contains('misplaced') && !kbKey.classList.contains('right')) {
+      if (!kbKey.classList.contains('misplaced')) {
+        kbKey.classList.remove('wrong');
+        kbKey.classList.add('misplaced');
+      }
+    }
+    else if (element.classList.contains('wrong') && !kbKey.classList.contains('right') && !kbKey.classList.contains('misplaced')) {
+      if (!kbKey.classList.contains('wrong')) {
+        kbKey.classList.add('wrong');
+      }
+    }
+  })
 }
 
 const kbClickHandler = (e) => {
