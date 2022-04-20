@@ -1,6 +1,6 @@
 let fs = require('fs');
 
-const pdd = fs.readFileSync('./database/pdd.txt', { encoding: 'utf8' });
+const pdd = Object.keys(JSON.parse(fs.readFileSync('./database/pdd.json', { encoding: 'utf8' })))[0];
 console.log(`Palavra do dia: ${pdd}`)
 
 const checkWord = (guess, showSolution) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const { checkWord } = require('./checkWord');
+const drawWord = require('./drawWord');
 
 let app = express();
 
@@ -21,6 +22,11 @@ app.get('/js/:name', (req, res) => {
 
 app.post('/check', (req, res) => {
   res.json(checkWord(req.body.guess, req.body.tries === 6));
+})
+
+app.post('/draw', (req, res) => {
+  drawWord();
+  res.json({ status: 'ok' });
 })
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
