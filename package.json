@@ -13,6 +13,7 @@
     "express": "^4.17.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "prompt-sync": "^4.2.0"
   }
 }
