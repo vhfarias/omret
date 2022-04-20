@@ -1,9 +1,6 @@
 const fs = require('fs');
 
 let input = fs.readFileSync(__dirname + '/lexporbr_alfa_txt.txt', { encoding: 'latin1' });
-let output = fs.openSync(__dirname + '/database.csv', 'w');
-
-//TODO: filtro para remover palavras estrangeiras
 
 //funcão para encadeamento de uma sequência de funções a serem aplicadas aos dados
 const pipe = (...funcs) => x => funcs.reduce((acc, f) => f(acc), x);
@@ -111,12 +108,11 @@ let result = pipe(splitLines,
     /*   desiredColumns: [0, 1, 9, 10, 14, 15, 17, 19, 24] */
     desiredColumns: [0]
   })
-fs.writeFileSync(output, result.data.join('\n'));
 
 //separando um conjunto de palavras
 let pool = new Set(result.data);
 let db = Array.from(pool);
-//embaralhar palavras
+//embaralhando palavras
 for (let i = 0; i < 1000; i++) {
   db = db.sort((a, b) => Math.random() - 0.5)
 }
@@ -125,4 +121,4 @@ db = db.map(word => {
   return [key, word];
 })
 
-fs.writeFileSync(__dirname + '/words.json', JSON.stringify(Object.fromEntries(db), null, ' '));
+fs.writeFileSync(__dirname + '/wordList.json', JSON.stringify(Object.fromEntries(db), null, ' '));
