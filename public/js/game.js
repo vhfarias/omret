@@ -119,19 +119,28 @@ const keyboardHandler = (key) => {
             //atualiza o teclado
             updateKb(currentRow);
             currentRow.classList.remove('current');
-            //checar fim (vitória ou máximo de tentativas)
-            if (Object.values(answers).every(answer => answer === 'right') || Game.tries === Game.maxTries) {
-              console.log('Fim de jogo');
-              // game over, mostra a palavra
-              if (Game.tries === Game.maxTries) {
-                //mostra a palavra nos avisos
-                console.log('last try: ' + Game.tries)
-                let keywordDiv = document.querySelector('.warn');
-                keywordDiv.innerText = `A palavra é ${res.solution.toUpperCase()}`
-                keywordDiv.classList.remove('hidden');
-              }
-            } else {
-              //segue o jogo
+
+            //checar fim de jogo
+            //vitória
+            if (Object.values(answers).every(answer => answer === 'right')) {
+              //mostra mensagem de vitória
+              let keywordDiv = document.querySelector('.warn');
+              let messages = ['Tá de hack!', 'Você é vidente?', 'Mandou muito!', 'Show!', 'Parabéns!', 'Ufa...'];
+              keywordDiv.innerText = messages[Game.tries - 1];
+              keywordDiv.classList.remove('hidden');
+              return;
+            }
+            //derrota
+            else if (Game.tries === Game.maxTries) {
+              //mostra a palavra nos avisos
+              console.log('last try: ' + Game.tries)
+              let keywordDiv = document.querySelector('.warn');
+              keywordDiv.innerText = `A palavra é ${res.solution.toUpperCase()}`
+              keywordDiv.classList.remove('hidden');
+              return;
+            }
+            //segue o jogo
+            else {
               let nextLine = currentRow.nextSibling;
               nextLine?.classList.add('current');
               Game.tries++;
