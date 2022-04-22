@@ -1,12 +1,11 @@
 let fs = require('fs');
 
-const pdd = Object.keys(JSON.parse(fs.readFileSync('./database/pdd.json', { encoding: 'utf8' })))[0];
-console.log(`Palavra do dia: ${pdd}`)
-
 const checkWord = (guess, showSolution) => {
+  //lê o arquivo com a palavra do dia
+  const pdd = Object.entries(JSON.parse(fs.readFileSync('./database/pdd.json', { encoding: 'utf8' })))[0];
 
   // cria um array distinguindo as letras no lugar certo das outras
-  let par = Array.from(pdd).map((letter, i) => guess[i] === letter ? '=' : pdd[i]);
+  let par = Array.from(pdd[0]).map((letter, i) => guess[i] === letter ? '=' : pdd[0][i]);
 
   //cria uma cópia do array acima
   let par2 = Array.from(par);
@@ -21,7 +20,7 @@ const checkWord = (guess, showSolution) => {
         // ignorar letras que já foram comparadas
         if (['=', '~', '-'].includes(par2[j])) continue
         // se as letras são iguais, está na palavra, mas na posição errada
-        if (guess[j] === pdd[i]) {
+        if (guess[j] === pdd[0][i]) {
           par2[j] = '~';
           break;
         }
@@ -36,7 +35,8 @@ const checkWord = (guess, showSolution) => {
 
   let response = {};
   response.answer = par4;
-  showSolution ? response.solution = pdd : '';
+  //envia a resposta certa se for a ultima tentativa
+  showSolution ? response.solution = pdd[1] : '';
   return response
 }
 
