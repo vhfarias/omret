@@ -27,11 +27,21 @@ const drawWord = () => {
   //adiciona a palavra sorteada no conjunto
   pastWords.push(randomEntry);
   lastWord = [Array.from(randomEntry)];
+  //cria um "timestamp" para a palavra
+  let stamp = new Date(Date.now()).getDate();
+  lastWord.push(["_day", stamp.toString()]);
   //escreve a palavra mais recente em arquivo separado
   writeFileSync(lastWordFilepath, JSON.stringify(Object.fromEntries(lastWord)));
   //escreve as palavras sorteadas anteriormente em arquivo
   writeFileSync(pastWordsFilepath, JSON.stringify(Object.fromEntries(pastWords), null, ' '));
 }
 
-module.exports = drawWord;
+const getWordOfTheDayTimestamp = () => {
+  return Number(JSON.parse(readFileSync(lastWordFilepath, { encoding: 'utf-8' }))["_day"]);
+}
+
+module.exports = {
+  drawWord,
+  getWordOfTheDayTimestamp
+}
 
