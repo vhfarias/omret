@@ -1,7 +1,8 @@
-<figure align="center">
-<img src="./.github/omret.png" alt="Omret">
-<figcaption>Um clone de Wordle, Termo e afins<figcaption>
-</figure>
+<div align="center">
+<img src="./.github/omret.png" alt="Omret"><br>
+Um clone de Wordle, Termo e afins
+</div>
+
 
 ## Sobre
 
