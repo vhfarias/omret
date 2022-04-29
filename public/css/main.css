@@ -73,7 +73,6 @@ h1 {
   background-color: #00000027;
   font-weight: bold;
   border-radius: 0.25em;
-  font-family: Arial, sans-serif;
   user-select: none;
   transition: background-color 0.2s;
 }
