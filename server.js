@@ -4,7 +4,7 @@ const { drawWord, getWordOfTheDayTimestamp } = require('./drawWord');
 
 let app = express();
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
@@ -18,6 +18,10 @@ app.get('/css/:name', (req, res) => {
 
 app.get('/js/:name', (req, res) => {
   res.sendFile(__dirname + '/public/js/' + req.params.name);
+})
+
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(__dirname + '/public/favicon.ico');
 })
 
 app.post('/check', (req, res) => {
