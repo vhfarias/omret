@@ -28,10 +28,11 @@ app.post('/check', (req, res) => {
   res.json(checkWord(req.body.guess, req.body.tries === 6));
 })
 
-app.post('/draw', (req, res) => {
+//endpoint for testing draw function
+/* app.post('/draw', (req, res) => {
   drawWord();
   res.json({ status: 'ok' });
-})
+}) */
 
 //verifica se precisa sortear uma nova palavra
 const today = new Date(Date.now()).getDate();
